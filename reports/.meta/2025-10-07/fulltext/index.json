@@ -1,0 +1,18 @@
+{
+  "為替モーニングコメント": {
+    "path": "fulltext/_E7_82_BA_E6_9B_BF_E3_83_A2_E3_83_BC_E3_83_8B_E3_83_B3_E3_82_B0_E3_82_B3_E3_83_A.json",
+    "count": 1
+  },
+  "欧州市場コメント": {
+    "path": "fulltext/_E6_AC_A7_E5_B7_9E_E5_B8_82_E5_A0_B4_E3_82_B3_E3_83_A1_E3_83_B3_E3_83_88.json",
+    "count": 0
+  },
+  "米国市場コメント": {
+    "path": "fulltext/_E7_B1_B3_E5_9B_BD_E5_B8_82_E5_A0_B4_E3_82_B3_E3_83_A1_E3_83_B3_E3_83_88.json",
+    "count": 0
+  },
+  "マクロ・スナップショット": {
+    "path": "fulltext/_E3_83_9E_E3_82_AF_E3_83_AD_E3_83_BB_E3_82_B9_E3_83_8A_E3_83_83_E3_83_97_E3_82_B.json",
+    "count": 0
+  }
+}

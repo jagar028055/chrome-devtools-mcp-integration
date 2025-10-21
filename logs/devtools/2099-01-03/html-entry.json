@@ -1,0 +1,46 @@
+{
+  "url": "https://example.com/report-viewer",
+  "domain": "example.com",
+  "entryId": "html-entry",
+  "date": "2099-01-03",
+  "timestamp": "2025-10-21T21:23:52.746Z",
+  "steps": [
+    {
+      "action": "navigate",
+      "url": "https://example.com/report-viewer",
+      "timestamp": "2025-10-21T21:23:52.746Z"
+    },
+    {
+      "action": "click_attempt",
+      "selector": ".primary",
+      "timestamp": "2025-10-21T21:23:52.746Z"
+    },
+    {
+      "action": "click_success",
+      "selector": ".primary",
+      "timestamp": "2025-10-21T21:23:52.746Z"
+    },
+    {
+      "action": "download_started",
+      "timestamp": "2025-10-21T21:23:52.746Z"
+    },
+    {
+      "action": "download_completed",
+      "path": "/Users/satoissei/Desktop/VS Code/Get_Report/tmp/fulltext-cdp/2099-01-03/html-entry.pdf",
+      "timestamp": "2025-10-21T21:23:52.747Z"
+    },
+    {
+      "action": "format_converted",
+      "format": "html",
+      "headerSample": "<html><body><main class=\"center\"",
+      "path": "/Users/satoissei/Desktop/VS Code/Get_Report/tmp/fulltext-cdp/2099-01-03/html-entry.html",
+      "timestamp": "2025-10-21T21:23:52.747Z"
+    }
+  ],
+  "networkRequests": [],
+  "consoleMessages": [],
+  "success": true,
+  "clickedSelector": ".primary",
+  "detectedFormat": "html",
+  "contentType": "text/html"
+}

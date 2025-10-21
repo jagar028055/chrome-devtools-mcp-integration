@@ -1,0 +1,225 @@
+{
+  "cookies": [
+    {
+      "name": "grp-session",
+      "value": "OTM1NmY4Y2ItMWViNi00ZDBkLWE5NjMtNTg1ODgzYTQ5MDhk",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1767389305.149673,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-domicile",
+      "value": "ja",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1767389305.150025,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-user",
+      "value": "external",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1767389305.150299,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-ui-lang",
+      "value": "ja",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1767389305.150797,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-pub-lang",
+      "value": "ja",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1767389305.150858,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-terms-accepted",
+      "value": "1",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1767389305.150909,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-bulletin",
+      "value": "",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1767389305.150982,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-japi",
+      "value": "Production",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1791149290.473587,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-view",
+      "value": "Tiles",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1791149290.473716,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-regions",
+      "value": "",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1791149290.473816,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-asset-class",
+      "value": "",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1791149290.473919,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-page-size",
+      "value": "20",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1791149290.474038,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-menu-side",
+      "value": "Right",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1791149290.474146,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-readership-link",
+      "value": "Classic%20readership",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1791149290.474213,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-pagination-pos",
+      "value": "Bottom",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1791149290.474298,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-menu",
+      "value": "",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1791149290.474614,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-preferences-page",
+      "value": "",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1791149290.474686,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "grp-user-contact",
+      "value": "bIHk7naCU2xm7fjI+H3jKe3OWZFiT9+dN4c3xSR6WuhTdQ==",
+      "domain": "www.nomuranow.com",
+      "path": "/research",
+      "expires": 1767389305.150591,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "NNSESSION",
+      "value": "13a2937f-bc03-48f1-a935-ecb2f2330f14",
+      "domain": "www.nomuranow.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "WFXSZPSC",
+      "value": "02da12237b-20e9-41hWhpGBWZ_35rEhzq0Ab8qLjU_vO8ktEm6tNeHFOvxYC7XIMmS2p1tFm4INzKYF_zPv0",
+      "domain": "www.nomuranow.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MPUGAIGU",
+      "value": "3S0533fc2f-bf4a-427nhn6neuavWERFXxJoljCM3A_XmbwHj3yt1BeP5y13CczUl9ixPYt3z0mgu5zxYm4bZ4eJe7xjWwn0qonkCCB29J6SDJRAL8h_jFHTJkU16fIP6J2fzISfxo5ejj-mYn4DxcNCYawRFhzDeV",
+      "domain": "www.nomuranow.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://www.nomuranow.com",
+      "localStorage": [
+        {
+          "name": "grp-events",
+          "value": "[{\"type\":\"navigation-event\",\"payload\":{\"pathname\":\"/public/login\",\"search\":\"?goto=%2FHome\",\"timestamp\":1759613261510}},{\"type\":\"navigation-event\",\"payload\":{\"pathname\":\"/Home\",\"search\":\"\",\"timestamp\":1759613288940}},{\"type\":\"banner-view\",\"payload\":{\"id\":\"Extel 2026 All-Japan Research Team Survey JP\",\"timestamp\":1759613292905}},{\"type\":\"banner-view\",\"payload\":{\"id\":\"Nomura Webcast\",\"timestamp\":1759613295423}},{\"type\":\"banner-view\",\"payload\":{\"id\":\"Anchor / ベーシック / Close-up\",\"timestamp\":1759613298605}},{\"type\":\"banner-view\",\"payload\":{\"id\":\"Handbook - JA\",\"timestamp\":1759613301715}},{\"type\":\"banner-view\",\"payload\":{\"id\":\"Analyst Directory - Japanese\",\"timestamp\":1759613304838}}]"
+        }
+      ]
+    }
+  ]
+}

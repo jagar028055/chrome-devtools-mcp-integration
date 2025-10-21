@@ -1,0 +1,25 @@
+{
+  "category": "Equity",
+  "generatedAt": "2025-10-21T21:23:51.513Z",
+  "total": 3,
+  "items": [
+    {
+      "id": "sample-1",
+      "category": "Equity",
+      "title": "Sample Plain Title",
+      "text": "Sample plain text content",
+      "pdfPath": "tmp/fulltext-pdf/2025-10-04/sample-1.pdf"
+    },
+    {
+      "id": "sample-2",
+      "category": "Equity",
+      "text": null
+    },
+    {
+      "id": "html-1",
+      "category": "Equity",
+      "title": "為替モーニングコメント",
+      "text": "為替モーニングコメント\n\n本日のドル円は、前日の米経済指標を受けて小幅高となった。\n東京時間では輸入企業の需給が押し上げ、夕刻にかけて150円台を試す展開となった。\n\n脚注1: 主要指標は別紙参照。"
+    }
+  ]
+}

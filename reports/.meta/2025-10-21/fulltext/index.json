@@ -1,0 +1,14 @@
+{
+  "為替モーニングコメント": {
+    "path": "fulltext/_E7_82_BA_E6_9B_BF_E3_83_A2_E3_83_BC_E3_83_8B_E3_83_B3_E3_82_B0_E3_82_B3_E3_83_A.json",
+    "count": 1
+  },
+  "All": {
+    "path": "fulltext/all.json",
+    "count": 1
+  },
+  "後藤 祐二朗 チーフ為替ストラテジスト": {
+    "path": "fulltext/_E5_BE_8C_E8_97_A4_20_E7_A5_90_E4_BA_8C_E6_9C_97_20_E3_83_81_E3_83_BC_E3_83_95_E.json",
+    "count": 1
+  }
+}

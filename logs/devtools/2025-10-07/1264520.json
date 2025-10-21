@@ -1,0 +1,99 @@
+{
+  "url": "https://go.nomuranow.com/research/japi/publication/1264520?appname=GRPUI",
+  "domain": "go.nomuranow.com",
+  "entryId": "1264520",
+  "date": "2025-10-07",
+  "timestamp": "2025-10-10T23:27:22.466Z",
+  "config": "NomuraNow",
+  "steps": [
+    {
+      "action": "navigate",
+      "url": "https://go.nomuranow.com/research/japi/publication/1264520?appname=GRPUI",
+      "timestamp": "2025-10-10T23:27:24.007Z"
+    },
+    {
+      "action": "click_attempt",
+      "selector": "#pdf-download-btn",
+      "timestamp": "2025-10-10T23:27:28.741Z"
+    },
+    {
+      "action": "inline_pdf_captured",
+      "selector": "#pdf-download-btn",
+      "timestamp": "2025-10-10T23:27:59.133Z"
+    },
+    {
+      "action": "download_started",
+      "timestamp": "2025-10-10T23:27:59.135Z"
+    },
+    {
+      "action": "download_completed",
+      "path": "/Users/satoissei/Desktop/VS Code/Get_Report/tmp/fulltext-cdp/2025-10-07/1264520.pdf",
+      "timestamp": "2025-10-10T23:27:59.138Z"
+    }
+  ],
+  "networkRequests": [],
+  "consoleMessages": [
+    {
+      "type": "debug",
+      "text": "Report script - v1.50",
+      "timestamp": "2025-10-10T23:27:26.827Z"
+    },
+    {
+      "type": "log",
+      "text": "Requesting URL https://www.nomuranow.com/research/japi/publications/back-issues/1264520?ucid=knjGw5BA%2FAgXoyubb1xZru542qMKP%2FvF3AhcsUOWR9HjFQ%3D%3D",
+      "timestamp": "2025-10-10T23:27:26.829Z"
+    },
+    {
+      "type": "debug",
+      "text": "No related reports (section 5-3-0)",
+      "timestamp": "2025-10-10T23:27:26.837Z"
+    },
+    {
+      "type": "debug",
+      "text": "Instrumentation - v1.13",
+      "timestamp": "2025-10-10T23:27:26.838Z"
+    },
+    {
+      "type": "log",
+      "text": "Requesting URL https://www.nomuranow.com/research/japi/subscription/periodical/FX%20Morning%20Comments?ucid=knjGw5BA%2FAgXoyubb1xZru542qMKP%2FvF3AhcsUOWR9HjFQ%3D%3D",
+      "timestamp": "2025-10-10T23:27:26.849Z"
+    },
+    {
+      "type": "log",
+      "text": "Requesting URL https://www.nomuranow.com/research/japi/publications/themes/1264520?ucid=knjGw5BA%2FAgXoyubb1xZru542qMKP%2FvF3AhcsUOWR9HjFQ%3D%3D",
+      "timestamp": "2025-10-10T23:27:26.854Z"
+    },
+    {
+      "type": "warning",
+      "text": "Error initialising scroll to top btn TypeError: Cannot read properties of null (reading 'appendChild')\n    at https://researchcdn.nomuranow.com/01/p/ns/public/report/voting-relatedreports.js:1:15114\n    at j (https://researchcdn.nomuranow.com/01/p/ns/public/report/voting-relatedreports.js:1:15130)\n    at https://researchcdn.nomuranow.com/01/p/ns/public/report/voting-relatedreports.js:1:25069",
+      "timestamp": "2025-10-10T23:27:26.854Z"
+    },
+    {
+      "type": "log",
+      "text": "Requesting URL https://www.nomuranow.com/research/japi/user/reading-list?ucid=knjGw5BA%2FAgXoyubb1xZru542qMKP%2FvF3AhcsUOWR9HjFQ%3D%3D",
+      "timestamp": "2025-10-10T23:27:26.855Z"
+    },
+    {
+      "type": "log",
+      "text": "Restarting session",
+      "timestamp": "2025-10-10T23:27:26.856Z"
+    },
+    {
+      "type": "debug",
+      "text": "Posting beacon to: https://www.nomuranow.com/research/japi/usage-analytics?ucid=knjGw5BA%2FAgXoyubb1xZru542qMKP%2FvF3AhcsUOWR9HjFQ%3D%3D  [env:prod]",
+      "timestamp": "2025-10-10T23:27:26.857Z"
+    },
+    {
+      "type": "debug",
+      "text": "5 reports received",
+      "timestamp": "2025-10-10T23:27:27.428Z"
+    },
+    {
+      "type": "warning",
+      "text": "Subscription Error: Not Found",
+      "timestamp": "2025-10-10T23:27:27.779Z"
+    }
+  ],
+  "success": true,
+  "clickedSelector": "#pdf-download-btn"
+}

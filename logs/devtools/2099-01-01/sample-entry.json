@@ -1,0 +1,39 @@
+{
+  "url": "https://example.com/report",
+  "domain": "example.com",
+  "entryId": "sample-entry",
+  "date": "2099-01-01",
+  "timestamp": "2025-10-21T21:23:52.686Z",
+  "steps": [
+    {
+      "action": "navigate",
+      "url": "https://example.com/report",
+      "timestamp": "2025-10-21T21:23:52.687Z"
+    },
+    {
+      "action": "click_attempt",
+      "selector": ".primary",
+      "timestamp": "2025-10-21T21:23:52.687Z"
+    },
+    {
+      "action": "click_success",
+      "selector": ".primary",
+      "timestamp": "2025-10-21T21:23:52.687Z"
+    },
+    {
+      "action": "download_started",
+      "timestamp": "2025-10-21T21:23:52.687Z"
+    },
+    {
+      "action": "download_completed",
+      "path": "/Users/satoissei/Desktop/VS Code/Get_Report/tmp/fulltext-cdp/2099-01-01/sample-entry.pdf",
+      "timestamp": "2025-10-21T21:23:52.689Z"
+    }
+  ],
+  "networkRequests": [],
+  "consoleMessages": [],
+  "success": true,
+  "clickedSelector": ".primary",
+  "detectedFormat": "pdf",
+  "contentType": "application/pdf"
+}

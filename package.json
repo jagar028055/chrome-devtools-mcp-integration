@@ -1,0 +1,34 @@
+{
+  "name": "chrome-dev-mcp-project",
+  "version": "1.0.0",
+  "description": "Chrome Dev MCP設定プロジェクト",
+  "main": "index.js",
+  "scripts": {
+    "setup": "npm install",
+    "mcp-setup": "npx chrome-devtools-mcp@latest",
+    "start": "echo 'Chrome Dev MCPサーバーを起動するには適切なコマンドを実行してください'",
+    "collect": "node scripts/collectReports.js",
+    "auth": "node scripts/setupDriveOAuth.js",
+    "test": "node scripts/testConversion.js && node scripts/testFulltextPlain.js && node scripts/testDriveUpload.js && node scripts/testCdpFallback.js && node scripts/testHtmlToText.js",
+    "test-devtools": "node scripts/testChromeDevTools.js",
+    "ui": "node scripts/interactive.js"
+  },
+  "keywords": [
+    "chrome",
+    "mcp",
+    "devtools",
+    "automation",
+    "reports"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cli-table3": "^0.6.3",
+    "pdf-parse": "^2.1.7",
+    "playwright": "^1.47.0",
+    "prompts": "^2.4.2",
+    "googleapis": "^131.0.0",
+    "chrome-devtools-mcp": "^0.6.1",
+    "jsdom": "^22.1.0"
+  }
+}

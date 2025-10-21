@@ -1,0 +1,72 @@
+{
+  "All": {
+    "label": "All Regions",
+    "items": [
+      {
+        "title": "米国：2025年9月FOMC会合 - 0.25％ポイントの利下げを実施、参加者予想は年内あと2回の利下げを示唆",
+        "url": "https://go.nomuranow.com/research/japi/publication/1262526",
+        "date": "2025-09-18",
+        "summary": "2025年9月16～17日の連邦公開市場委員会(FOMC)会合では、大方の予想通り、0.25％ポイントの利下げを実施した。",
+        "analysts": [
+          "Jeremy Schwartz",
+          "雨宮 愛知 エコノミスト",
+          "Ruchir Sharma",
+          "David Seif",
+          "Jacklyn Goloborodsky"
+        ],
+        "category": "US Macro",
+        "region": "Americas"
+      },
+      {
+        "title": "米国市場コメント - No.942 政府閉鎖と今後",
+        "url": "https://go.nomuranow.com/research/japi/publication/1262101",
+        "date": "2025-10-01",
+        "summary": "暫定予算が成立せず政府閉鎖の可能性が高まっている。",
+        "analysts": [
+          "小清水 直和"
+        ],
+        "category": "Market Comment",
+        "region": "Americas"
+      },
+      {
+        "title": "ユーロ圏：2025年9月標準消費者物価 - インフレ加速は前年のエネルギー価格の低さが理由",
+        "url": "https://go.nomuranow.com/research/japi/publication/1263999",
+        "date": "2025-10-02",
+        "summary": "2025年9月のユーロ圏HICPは前年同月比＋2.2％と前月から加速。",
+        "analysts": [
+          "Andrzej Szczepaniak",
+          "George Buckley",
+          "Josie Anderson",
+          "David Seif"
+        ],
+        "category": "Eurozone Macro",
+        "region": "EMEA"
+      },
+      {
+        "title": "グローバル金利デイリー - 米政府閉鎖と日銀利上げ/米ADP・ISM/ユーロ圏HICP",
+        "url": "https://go.nomuranow.com/research/japi/publication/1263700",
+        "date": "2025-10-02",
+        "summary": "米政府閉鎖リスクと主要金利イベントの影響を整理。",
+        "analysts": [
+          "宍戸 知暁",
+          "岸田 英樹",
+          "小清水 直和"
+        ],
+        "category": "Rates Daily",
+        "region": "EMEA"
+      },
+      {
+        "title": "インド：2025年10月RBI金融政策委員会 - 慎重な姿勢でハト派的な政策金利据え置き",
+        "url": "https://go.nomuranow.com/research/japi/publication/1264306",
+        "date": "2025-10-03",
+        "summary": "RBIは政策金利を据え置き、12月と26年2月に追加利下げを示唆。",
+        "analysts": [
+          "Sonal Varma",
+          "Aurodeep Nandi"
+        ],
+        "category": "India Macro",
+        "region": "Asia ex-Japan"
+      }
+    ]
+  }
+}

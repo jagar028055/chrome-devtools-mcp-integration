@@ -1,0 +1,45 @@
+{
+  "url": "https://example.com/report",
+  "domain": "example.com",
+  "entryId": "new-tab-entry",
+  "date": "2099-01-02",
+  "timestamp": "2025-10-21T21:23:52.694Z",
+  "steps": [
+    {
+      "action": "navigate",
+      "url": "https://example.com/report",
+      "timestamp": "2025-10-21T21:23:52.694Z"
+    },
+    {
+      "action": "click_attempt",
+      "selector": ".primary",
+      "timestamp": "2025-10-21T21:23:52.694Z"
+    },
+    {
+      "action": "new_tab_detected",
+      "selector": ".primary",
+      "newUrl": "about:blank",
+      "timestamp": "2025-10-21T21:23:52.745Z"
+    },
+    {
+      "action": "click_success_new_tab",
+      "selector": ".primary",
+      "timestamp": "2025-10-21T21:23:52.745Z"
+    },
+    {
+      "action": "download_started",
+      "timestamp": "2025-10-21T21:23:52.745Z"
+    },
+    {
+      "action": "download_completed",
+      "path": "/Users/satoissei/Desktop/VS Code/Get_Report/tmp/fulltext-cdp/2099-01-02/new-tab-entry.pdf",
+      "timestamp": "2025-10-21T21:23:52.745Z"
+    }
+  ],
+  "networkRequests": [],
+  "consoleMessages": [],
+  "success": true,
+  "clickedSelector": ".primary",
+  "detectedFormat": "pdf",
+  "contentType": "application/pdf"
+}

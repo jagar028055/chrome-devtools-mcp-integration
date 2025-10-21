@@ -1,0 +1,30 @@
+[
+  {
+    "domain": "nomuranow.com",
+    "name": "NomuraNow",
+    "selectors": [
+      "#pdf-download-btn",
+      "a#pdf-download-btn",
+      "a.grp-btn#pdf-download-btn",
+      "a[href*='/publication/'][href*='.file']",
+      "a[href*='/publication/'][href*='format=pdf']",
+      "a[href*='.pdf'][href*='/publication/']",
+      "button:has-text('PDF')",
+      "a[download*='.pdf']",
+      "#pdfDownloadLink",
+      "a[href*='.pdf']"
+    ],
+    "waitForSelector": "body",
+    "notes": "NomuraNow report PDF download selectors"
+  },
+  {
+    "domain": "example.com",
+    "name": "Example Site",
+    "selectors": [
+      "a[href$='.pdf']",
+      "a.download-pdf"
+    ],
+    "waitForSelector": "body",
+    "notes": "Example configuration for testing"
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "chrome-devtools-mcp@latest",
+        "--headless=false",
+        "--isolated=true"
+      ],
+      "description": "Chrome DevTools MCP server for browser automation and debugging"
+    }
+  },
+  "settings": {
+    "chrome": {
+      "defaultChannel": "stable",
+      "executablePath": "",
+      "userDataDir": "./tmp/chrome-user-data",
+      "headless": false,
+      "devtools": true
+    },
+    "performance": {
+      "enableTracing": true,
+      "screenshotQuality": 90,
+      "timeoutMs": 30000
+    }
+  }
+}
