@@ -7,7 +7,7 @@
 
 ## スコープ
 - 対象レポート: `fetchFulltext` で検出した全URL（カテゴリ/日付フィルタ適用済み）。
-- 保存先: ローカル一時ディレクトリ `tmp/fulltext-pdf/<date>/` と Google Drive フォルダ（`ResearchReports/<date>/<証券会社>/pdf`）。
+- 保存先: ローカル一時ディレクトリ `tmp/fulltext-pdf/<date>/` と Google Drive フォルダID `1593sqSQhNgKE7m0noKVdSbJC_XDHtdQ3`（ルート直下に `YYYY-MM-DD_<レポートタイトル>_<要約抜粋>.pdf` 形式で保存）。
 - 出力: `reports/<date>/fulltext/<category>.json` に `pdfPath`（ローカル相対パス）と `driveFileId`（Google Drive ID）を追記。失敗記録は `failed.csv` に理由・HTTPステータスなどを保持。
 
 ## 前提・制約
@@ -16,7 +16,7 @@
 - Google Drive へのアップロードは社内規定の確認が必須。禁止されている場合は社内ストレージに切り替える。
 - Google API の認証方法（OAuth2 / サービスアカウント）を事前に決定し、資格情報を安全に管理する。
 - PDFは機密情報の可能性が高いため、保存ディレクトリとDriveフォルダのアクセス制御・暗号化を考慮する。
-- `FULLTEXT_DRIVE_ROOT_NAME` でルートフォルダ名（既定: `ResearchReports`）を指定し、ベンダー別サブフォルダを利用しない場合は `FULLTEXT_DRIVE_FLAT=1` を設定する。
+- `FULLTEXT_DRIVE_ROOT_NAME` でルートフォルダ名（既定: `ResearchReports`）を指定し、現在は `FULLTEXT_DRIVE_FLAT=1` を既定値としてフラット保存を運用する。
 
 ## 全体フロー
 1. Playwrightでレポートページを開き、PDFダウンロード候補URLを列挙。

@@ -44,15 +44,19 @@ function trimDisclosureTail(text) {
 
 function parseArgs(argv) {
   const envConfig = getFulltextEnv();
+  const defaultCategories = Array.from(new Set(envConfig.defaultCategories || []));
+  const userCategories = [];
+  let categorySpecified = false;
   const args = {
     date: null,
     storageState: 'storage_state.json',
     output: 'reports',
-    categories: Array.from(new Set(envConfig.defaultCategories || [])),
+    categories: [...defaultCategories],
     all: false,
     headless: true,
     rateWait: DEFAULT_RATE_WAIT_MS,
     retries: DEFAULT_RETRY,
+    driveFlatStructure: envConfig.driveFlatStructure,
     selectorWait: 5000,
     writePlain: false,
     debug: false,
@@ -84,7 +88,11 @@ function parseArgs(argv) {
     } else if ((arg === '-o' || arg === '--output') && argv[i + 1]) {
       args.output = argv[++i];
     } else if ((arg === '-c' || arg === '--category') && argv[i + 1]) {
-      args.categories.push(argv[++i]);
+      categorySpecified = true;
+      userCategories.push(argv[++i]);
+    } else if (arg === '--categories' && argv[i + 1]) {
+      categorySpecified = true;
+      userCategories.push(...argv[++i].split(',').map((value) => value.trim()).filter(Boolean));
     } else if (arg === '--all') {
       args.all = true;
     } else if (arg === '--headless=false') {
@@ -155,7 +163,11 @@ function parseArgs(argv) {
       args.enableCdpFallback = true;
     }
   }
-  args.categories = Array.from(new Set(args.categories.filter(Boolean)));
+  if (categorySpecified) {
+    args.categories = Array.from(new Set(userCategories.filter(Boolean)));
+  } else {
+    args.categories = Array.from(new Set(args.categories.filter(Boolean)));
+  }
   if (!args.date) {
     throw new Error('--date YYYY-MM-DD を指定してください');
   }
@@ -200,14 +212,64 @@ function buildSnippet(text, length = 200) {
   return text.replace(/\s+/g, ' ').trim().slice(0, length);
 }
 
+function sanitizeDriveText(value) {
+  if (!value) return '';
+  return String(value)
+    .replace(/[\\/:*?"<>|]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function extractDescriptor(entry) {
+  if (!entry) return '';
+  const primary = sanitizeDriveText(entry.summary || '');
+  if (primary) {
+    const truncated = primary.slice(0, 50).trim();
+    return truncated.replace(/[、,;]+$/g, '').trim();
+  }
+  if (entry.text) {
+    const lines = String(entry.text)
+      .split('\n')
+      .map((line) => sanitizeDriveText(line))
+      .filter((line) => line.length > 0);
+    const discardPatterns = [
+      /^20\d{2}\s*年/,
+      /^本レポート/,
+      /^ＳＭＢＣ日興証券/,
+      /^SMBC\s*NIKKO/i,
+      /^For the exclusive use/i
+    ];
+    const descriptorLine = lines.find((line) => !discardPatterns.some((pattern) => pattern.test(line)));
+    if (descriptorLine) return descriptorLine;
+  }
+  if (entry.snippet) {
+    return sanitizeDriveText(entry.snippet);
+  }
+  return '';
+}
+
 function buildDriveFileName(entry, fallbackId, dateStr) {
-  const rawTitle = (entry && entry.title ? String(entry.title) : '').replace(/[\r\n]+/g, ' ');
-  const sanitized = rawTitle.replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim();
-  const base = sanitized || fallbackId || 'report';
-  const maxLength = 100;
-  const truncated = base.length > maxLength ? base.slice(0, maxLength) : base;
-  const prefix = dateStr ? `${dateStr}_` : '';
-  const combined = `${prefix}${truncated}`.trim() || (fallbackId || 'report');
+  const rawTitle = sanitizeDriveText(entry && entry.title ? entry.title : '');
+  const descriptor = extractDescriptor(entry);
+  const sanitizedDescriptor = descriptor ? sanitizeDriveText(descriptor) : '';
+
+  const segments = [];
+  if (dateStr) segments.push(sanitizeDriveText(dateStr));
+  if (rawTitle) segments.push(rawTitle);
+  if (sanitizedDescriptor && sanitizedDescriptor !== rawTitle) {
+    const maxDescriptorLength = 80;
+    const clipped = sanitizedDescriptor.length > maxDescriptorLength
+      ? `${sanitizedDescriptor.slice(0, maxDescriptorLength).trim()}`
+      : sanitizedDescriptor;
+    segments.push(clipped);
+  }
+  let combined = segments.filter(Boolean).join('_');
+  const maxCombinedLength = 180;
+  if (!combined) {
+    combined = fallbackId || 'report';
+  } else if (combined.length > maxCombinedLength) {
+    combined = combined.slice(0, maxCombinedLength).trim();
+  }
   return `${combined}.pdf`;
 }
 

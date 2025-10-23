@@ -38,17 +38,17 @@ tmp/
 ## 実装タスク一覧
 
 ### 0. 共通基盤整備
-- [ ] `scripts/providers/` ディレクトリを作成し、各社ごとの取得スクリプトを分離。
-- [ ] `config/providers.json` を追加し、各社の設定（ベースURL、ログイン方法、カテゴリの正規化ルール）を定義。
-- [ ] 取得結果を標準フォーマットに変換するヘルパー（ID、タイトル、カテゴリ、日付、URL、providerSlug を揃える）。
+- [x] `scripts/providers/` ディレクトリを作成し、各社ごとの取得スクリプトを分離。
+- [x] `config/providers.json` を追加し、各社の設定（ベースURL、ログイン方法、カテゴリの正規化ルール）を定義。
+- [x] 取得結果を標準フォーマットに変換するヘルパー（ID、タイトル、カテゴリ、日付、URL、providerSlug を揃える）。
 
 ### 1. SMBC日興証券
-- [ ] ログイン状態（storage_state もしくは OAuth）を確認。
-- [ ] レポート一覧ページの構造調査（HTML/CMS/API）。
-- [ ] 主要カテゴリ（例: 為替、株式、マクロ）を抽出するセレクタ・エンドポイントを特定。
-- [ ] `scripts/providers/smbc.js` を実装し、日付フィルタとカテゴリ分けを行い `reports/<date>/sources/smbc_nikko.json` を出力。
-- [ ] PDF 取得方法（`?format=pdf` / `.pdf` / ビューアHTML）を確認し、`collectPdfCandidates` にプロバイダ特有のパターンを追加。
-- [ ] `deriveProviderSlug` に `smbc-nikko` を登録（既存 `PROVIDER_RULES` へ）。
+- [x] ログイン状態（storage_state もしくは OAuth）を確認。
+- [x] レポート一覧ページの構造調査（HTML/CMS/API）。
+- [x] 主要カテゴリ（例: 為替、株式、マクロ）を抽出するセレクタ・エンドポイントを特定。
+- [x] `scripts/providers/smbc.js` を実装し、日付フィルタとカテゴリ分けを行い `reports/<date>/sources/smbc_nikko.json` を出力。
+- [x] PDF 取得方法（`?format=pdf` / `.pdf` / ビューアHTML）を確認し、直接ダウンロードURLから本文取得を行う。
+- [x] `deriveProviderSlug` に `smbc-nikko` を登録（既存 `PROVIDER_RULES` へ）。
 
 ### 2. 大和証券
 - [ ] 会員ページの認証方式を確認（ID/PW、証券系シングルサインオンなど）。
@@ -69,10 +69,10 @@ tmp/
 - [ ] `scripts/providers/mufgsm.js` を実装し、`reports/<date>/sources/mufgsm.json` を生成。
 - [ ] PDF の保存フローを検証し、`collectPdfCandidates` にパターンを追加。
 
-### 5. 差分管理・統合
-- [ ] `collectReports.js` を拡張し、各プロバイダスクリプトを順番に呼び出すオプション `--provider` を追加（デフォルト: 全社）。
-- [ ] `loadSources` をプロバイダ別 JSON に対応させ、`provider` フィールドを保持。
-- [ ] `fetchFulltext` の `driveFileName` を `YYYY-MM-DD_<provider>_<title>.pdf` に統一。
+ ### 5. 差分管理・統合
+- [x] `collectReports.js` を拡張し、各プロバイダスクリプトを順番に呼び出すオプション `--provider` を追加（デフォルト: 全社）。
+- [x] `loadSources` をプロバイダ別 JSON に対応させ、`provider` フィールドを保持。
+- [x] `fetchFulltext` の `driveFileName` を `YYYY-MM-DD_<provider>_<title>.pdf` に統一。
 - [ ] 各社で認証状態が切れた場合のリトライ・エラーログを整備。
 - [ ] `docs/` に各社の手順（ログイン方法、既知の制限、テストURL）を追記。
 
@@ -95,3 +95,27 @@ tmp/
 ---
 
 本計画をベースに、優先度の高いプロバイダ（SMBC日興 → 大和 → みずほ → 三菱UFJモルガン・スタンレー）から着手し、順次リポジトリに反映していく。 каждой task 完了後は `docs/` に経過を記録し、運用チームへの引き継ぎ資料も随時更新する。***
+
+## 進捗メモ（2025-10-22）
+- `config/providers.json` を追加し、`smbc-nikko` の MySearch カテゴリIDを整理済み。
+- `scripts/providers/smbc.js` を新規実装。Playwright の `storage_state` を用いて MySearch（初期値: 米国経済 / 欧州経済など）を巡回し、`reports/<date>/sources/smbc_nikko.json` を生成する。
+  - CLI例: `node scripts/providers/smbc.js --storage-state storage_state.json --date 2025-10-22 --categories us-economy,eu-economy --max-pages 2`
+  - `--max-pages` / `--max-items` で負荷を絞り込み可能。ログイン切れの場合はリダイレクト検知でエラーを返す。
+- `scripts/collectReports.js` に `--provider` / `--providers` オプションを追加。`--provider smbc-nikko` で上記スクリプトを内部呼び出しし、Nomura 収集と同日に SMBC の JSON を出力できる。
+  - Nomura を含む場合は従来通り `overseas_reports.json` を生成し、その日付ディレクトリを SMBC 側でも共有。
+- 既存Nomuraフローへの影響は無し（`--provider` 未指定時は従来通り）。
+- Playwright用 `storage_state` はブラウザでSMBC日興へログイン後、`await context.storage_state()` で別途作成する必要あり（有効期限に注意）。
+- `node scripts/fetchFulltext.js --date 2025-10-22 --categories us-economy,eu-economy --storage-state storage_state.json --drive-upload --debug` を実行。SMBC日興「米国経済」レポート2件のテキスト抽出・PDF保存が完了し、DriveフォルダID `1593sqSQhNgKE7m0noKVdSbJC_XDHtdQ3` に `2025-10-22_米国経済_<サマリ抜粋>.pdf` をアップロード済み（`reports/.meta/2025-10-22/fulltext/us-economy.json` に driveLink 記録）。
+
+### SMBC日興 運用手順メモ（2025-10-23 検証）
+- 事前準備: Playwrightの `storage_state.json` をChrome DevTools経由で更新（`scripts/openSmbcForLogin.js` → 手動ログイン → `scripts/saveStorageState.js`）。
+- 一覧取得: `node scripts/collectReports.js --providers smbc-nikko --storage-state storage_state.json --date YYYY-MM-DD --smbc-categories us-economy,eu-economy --smbc-max-pages 1 --debug`
+  - 成功すると `reports/YYYY-MM-DD/sources/smbc_nikko.json` と `reports/.meta/YYYY-MM-DD/sources/smbc_nikko.json` が生成。
+- 本文/PDF: `node scripts/fetchFulltext.js --date YYYY-MM-DD --categories us-economy,eu-economy --storage-state storage_state.json --drive-upload --debug`
+  - Driveアップロード先は `.env` の `FULLTEXT_DRIVE_FOLDER_ID`（既定: `1593sqSQhNgKE7m0noKVdSbJC_XDHtdQ3`）直下。標準構成では `YYYY-MM-DD_<レポートタイトル>_<要約抜粋>.pdf` 形式で保存。
+  - メタ確認: `reports/.meta/YYYY-MM-DD/fulltext/us-economy.json` に `driveLink` と `driveFileId` が記録されていることを確認。
+
+## 進捗メモ（2025-10-23）
+- `node scripts/collectReports.js --providers smbc-nikko --storage-state storage_state.json --date 2025-10-23 --smbc-categories us-economy,eu-economy --smbc-max-pages 1 --debug` を実行し、「米国経済」「欧州経済」各1件を取得（`reports/2025-10-23/sources/smbc_nikko.json`）。
+- `node scripts/fetchFulltext.js --date 2025-10-23 --categories us-economy,eu-economy --storage-state storage_state.json --drive-upload --debug` を実行し、該当2件のPDFアップロードを確認（Drive: フォルダID `1593sqSQhNgKE7m0noKVdSbJC_XDHtdQ3` 直下、メタ: `reports/.meta/2025-10-23/fulltext/*.json`）。
+- `FULLTEXT_DRIVE_FLAT=1` / `FULLTEXT_DRIVE_USE_DATE_FOLDER=0` を設定し、Drive直下で `YYYY-MM-DD_<レポートタイトル>_<要約抜粋>.pdf` 形式に統一。Nomura/SMBC いずれも同一命名規則・階層で運用する。

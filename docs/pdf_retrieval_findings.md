@@ -70,4 +70,4 @@
 - `writeRegionOutputs` / `writeCategoryOutputs` を調整し、`--write-plain` 有効時に `fulltext/plain/*.txt` を安定生成することを `testFulltextPlain.js` で確認済み。
 - HTMLビューアのフィクスチャ（`fixtures/html_viewer_sample.html`）を追加し、`testFulltextPlain.js` で折り畳み要素を含む本文/脚注が `.txt` に出力されることを検証。
 - 2025-10-20 追記: `collectPdfCandidates` に `publication/<entryId>.file` を追加し、`extractPdf` による直接ダウンロードを優先実行。HTML抜粋が成功した場合も `.file` 取得に成功すれば `buffer` として添付し、`tmp/fulltext-pdf/<date>/<entryId>-<hash>.pdf` が生成されることを `fetchFulltext.js --debug --write-plain` の実行で確認済み（Driveアップロードも成功）。
-- 2025-10-20 追記: Google Drive 上の保存階層を `ResearchReports/<date>/<provider>/pdf` に統一。証券会社は URL ドメインからスラッグ化して生成し、既存の `NomuraReports` フォルダ構造を自動的に移行（`FULLTEXT_DRIVE_ROOT_NAME` を新設）。必要に応じて `FULLTEXT_DRIVE_FLAT=1` でルート直下にフラット保存する構成も選択可能。
+- 2025-10-23 更新: Google Drive への保存はフォルダID `1593sqSQhNgKE7m0noKVdSbJC_XDHtdQ3` 配下にフラットで行い、`YYYY-MM-DD_<レポートタイトル>_<要約抜粋>.pdf` 形式でファイルを配置する。Nomura/SMBC などプロバイダに依らず同一ルールで運用し、旧構造（`ResearchReports/<date>/<provider>/pdf`）の記述は廃止。
