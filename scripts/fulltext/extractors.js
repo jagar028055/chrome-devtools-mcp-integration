@@ -422,6 +422,18 @@ async function collectPdfCandidates(page, entry, htmlFragment) {
       const absolute = new URL(href, base).toString();
       if (/\.pdf($|[?#])/i.test(absolute)) {
         candidates.add(absolute);
+        return;
+      }
+      if (/report_type=pdf/i.test(absolute)) {
+        candidates.add(absolute);
+        return;
+      }
+      if (/drp\.daiwa\.co\.jp/i.test(absolute) && /\/report\/reportFile\.do/i.test(absolute)) {
+        const daiwaUrl = new URL(absolute);
+        if (!daiwaUrl.searchParams.has('report_type')) {
+          daiwaUrl.searchParams.set('report_type', 'pdf');
+        }
+        candidates.add(daiwaUrl.toString());
       }
     } catch (error) {
       // ignore invalid URL
@@ -448,6 +460,13 @@ async function collectPdfCandidates(page, entry, htmlFragment) {
     });
   }
 
+  if (entry?.metadata?.pdfUrl) {
+    pushCandidate(entry.metadata.pdfUrl);
+  }
+  if (entry?.pdfUrl) {
+    pushCandidate(entry.pdfUrl);
+  }
+
   if (entry?.url) {
     try {
       const original = new URL(entry.url);
@@ -456,6 +475,12 @@ async function collectPdfCandidates(page, entry, htmlFragment) {
         const search = [params, originalParams].filter(Boolean).join('&');
         return search ? `${base}?${search}` : base;
       };
+
+      if (/drp\.daiwa\.co\.jp/i.test(original.hostname) && original.pathname.includes('/report/reportFile.do')) {
+        const daiwaPdf = new URL(entry.url);
+        daiwaPdf.searchParams.set('report_type', 'pdf');
+        candidates.add(daiwaPdf.toString());
+      }
 
       if (!original.searchParams.has('format')) {
         const withFormat = new URL(entry.url);

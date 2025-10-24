@@ -1,0 +1,64 @@
+{
+  "smbc-nikko": {
+    "slug": "smbc_nikko",
+    "displayName": "SMBC日興証券",
+    "baseUrl": "https://researchdirect.smbcnikko.co.jp",
+    "mysearchCategories": {
+      "us-economy": {
+        "id": 1,
+        "label": "米国経済"
+      },
+      "eu-economy": {
+        "id": 2,
+        "label": "欧州経済"
+      },
+      "jp-economy": {
+        "id": 3,
+        "label": "日本経済"
+      },
+      "fx-fixedincome": {
+        "id": 4,
+        "label": "為替・外債分析"
+      }
+    }
+  },
+  "daiwa": {
+    "slug": "daiwa_securities",
+    "displayName": "大和証券",
+    "baseUrl": "https://drp.daiwa.co.jp",
+    "search": {
+      "indexPath": "/rp-daiwa/member/search/index.do",
+      "resultPath": "/rp-daiwa/member/search/result.do"
+    },
+    "categories": {
+      "viewpoint": {
+        "label": "大和の視点",
+        "strategy": "keyword",
+        "keyword": "大和の視点",
+        "expectedCategories": [
+          "大和の視点"
+        ],
+        "maxPages": 2
+      },
+      "economic-view": {
+        "label": "大和の経済ビュー",
+        "strategy": "keyword",
+        "keyword": "大和の経済ビュー",
+        "expectedCategories": [
+          "大和の経済ビュー"
+        ],
+        "maxPages": 2
+      },
+      "market-tips": {
+        "label": "木野内栄治のMarket Tips",
+        "strategy": "keyword",
+        "keyword": "木野内栄治のMarket Tips",
+        "expectedCategories": [
+          "Market Tips",
+          "木野内栄治のMarket Tips"
+        ],
+        "maxPages": 2
+      }
+    }
+  }
+}

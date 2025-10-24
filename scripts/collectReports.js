@@ -33,7 +33,27 @@ function parseDateString(input) {
 }
 
 function parseArgs(argv) {
-  const args = { output: 'reports', storageState: null, from: null, date: null, applyFilter: false, fromDate: null, toDate: null, debug: false }; // defaults
+  const args = {
+    output: 'reports',
+    storageState: null,
+    from: null,
+    date: null,
+    applyFilter: false,
+    fromDate: null,
+    toDate: null,
+    debug: false,
+    providers: [],
+    smbcCategories: [],
+    smbcMaxPages: null,
+    smbcMaxItems: null,
+    smbcTimeout: 30000,
+    daiwaCategories: [],
+    daiwaMaxPages: null,
+    daiwaMaxItems: null,
+    daiwaTimeout: 45000,
+    daiwaWaitAfterSearch: null,
+    daiwaKeywordDelay: null
+  };
   for (let i = 2; i < argv.length; i++) {
     const arg = argv[i];
     if ((arg === '-o' || arg === '--output') && argv[i + 1]) {
@@ -54,8 +74,63 @@ function parseArgs(argv) {
       args.toDate = parseDateString(argv[++i]);
     } else if (arg === '--debug') {
       args.debug = true;
+    } else if (arg === '--provider' && argv[i + 1]) {
+      args.providers.push(argv[++i]);
+    } else if (arg === '--providers' && argv[i + 1]) {
+      args.providers.push(...argv[++i].split(',').map((value) => value.trim()).filter(Boolean));
+    } else if (arg === '--smbc-category' && argv[i + 1]) {
+      args.smbcCategories.push(argv[++i]);
+    } else if (arg === '--smbc-categories' && argv[i + 1]) {
+      args.smbcCategories.push(...argv[++i].split(',').map((value) => value.trim()).filter(Boolean));
+    } else if (arg === '--smbc-max-pages' && argv[i + 1]) {
+      const value = Number(argv[++i]);
+      if (Number.isFinite(value) && value > 0) {
+        args.smbcMaxPages = Math.floor(value);
+      }
+    } else if (arg === '--smbc-max-items' && argv[i + 1]) {
+      const value = Number(argv[++i]);
+      if (Number.isFinite(value) && value > 0) {
+        args.smbcMaxItems = Math.floor(value);
+      }
+    } else if ((arg === '--smbc-timeout' || arg === '--provider-timeout') && argv[i + 1]) {
+      const value = Number(argv[++i]);
+      if (Number.isFinite(value) && value >= 5000) {
+        args.smbcTimeout = Math.floor(value);
+      }
+    } else if (arg === '--daiwa-category' && argv[i + 1]) {
+      args.daiwaCategories.push(argv[++i]);
+    } else if (arg === '--daiwa-categories' && argv[i + 1]) {
+      args.daiwaCategories.push(...argv[++i].split(',').map((value) => value.trim()).filter(Boolean));
+    } else if (arg === '--daiwa-max-pages' && argv[i + 1]) {
+      const value = Number(argv[++i]);
+      if (Number.isFinite(value) && value > 0) {
+        args.daiwaMaxPages = Math.floor(value);
+      }
+    } else if (arg === '--daiwa-max-items' && argv[i + 1]) {
+      const value = Number(argv[++i]);
+      if (Number.isFinite(value) && value > 0) {
+        args.daiwaMaxItems = Math.floor(value);
+      }
+    } else if (arg === '--daiwa-timeout' && argv[i + 1]) {
+      const value = Number(argv[++i]);
+      if (Number.isFinite(value) && value >= 5000) {
+        args.daiwaTimeout = Math.floor(value);
+      }
+    } else if (arg === '--daiwa-wait-after-search' && argv[i + 1]) {
+      const value = Number(argv[++i]);
+      if (Number.isFinite(value) && value >= 0) {
+        args.daiwaWaitAfterSearch = Math.floor(value);
+      }
+    } else if (arg === '--daiwa-keyword-delay' && argv[i + 1]) {
+      const value = Number(argv[++i]);
+      if (Number.isFinite(value) && value >= 0) {
+        args.daiwaKeywordDelay = Math.floor(value);
+      }
     }
   }
+  args.providers = Array.from(new Set(args.providers.filter(Boolean)));
+  args.smbcCategories = Array.from(new Set(args.smbcCategories.filter(Boolean)));
+  args.daiwaCategories = Array.from(new Set(args.daiwaCategories.filter(Boolean)));
   return args;
 }
 
@@ -183,6 +258,22 @@ function logPreview(results, options = {}) {
   console.log(` 合計件数(フィルター前): ${total}`);
 }
 
+function normalizeProviderKey(input) {
+  const key = String(input || '').toLowerCase();
+  if (key === 'nomura' || key === 'nom') return 'nomura';
+  if (key === 'smbc' || key === 'smbc-nikko' || key === 'smbcnikko') return 'smbc-nikko';
+  if (key === 'daiwa' || key === 'daiwa-securities' || key === 'daiwasecurities' || key === 'daiwa_sec') return 'daiwa';
+  return key;
+}
+
+function getTodayString() {
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 async function collectWithBrowser(args) {
   if (!args.storageState) {
     throw new Error('Playwright storage stateファイル（--storage-state）が必要です。ログイン済みセッションを指定してください。');
@@ -255,50 +346,122 @@ async function loadFromFile(filePath) {
 async function main() {
   try {
     const args = parseArgs(process.argv);
-    let results;
-    if (args.from) {
-      results = await loadFromFile(args.from);
-    } else {
-      results = await collectWithBrowser(args);
-    }
-    if (args.debug) {
-      logPreview(results, { limit: 5 });
-    }
-    const referenceDate = args.date
-      ? new Date(`${args.date}T00:00:00+09:00`)
-      : new Date();
-    const filteredResults = applyFilters(results, args.applyFilter);
-    if (args.applyFilter) {
-      const stats = filteredResults.__filterStats || {};
-      delete filteredResults.__filterStats;
-      for (const [region, payload] of Object.entries(filteredResults)) {
-        const originalCount = (results[region]?.items || []).length;
-        const filteredCount = (payload?.items || []).length;
-        const regionStats = stats[region] || { titleHits: 0, analystHits: 0 };
-        console.log(`   ${region}: ${filteredCount}/${originalCount} 件 (タイトル一致 ${regionStats.titleHits}, 著者一致 ${regionStats.analystHits})`);
+    const providerList = (args.providers.length > 0 ? args.providers : ['nomura']).map(normalizeProviderKey);
+    const providerSet = new Set(providerList);
+
+    let resolvedDate = args.date || null;
+
+    if (providerSet.has('nomura')) {
+      let results;
+      if (args.from) {
+        results = await loadFromFile(args.from);
+      } else {
+        results = await collectWithBrowser(args);
+      }
+      if (args.debug) {
+        logPreview(results, { limit: 5 });
+      }
+      const referenceDate = args.date
+        ? new Date(`${args.date}T00:00:00+09:00`)
+        : new Date();
+      const filteredResults = applyFilters(results, args.applyFilter);
+      if (args.applyFilter) {
+        const stats = filteredResults.__filterStats || {};
+        delete filteredResults.__filterStats;
+        for (const [region, payload] of Object.entries(filteredResults)) {
+          const originalCount = (results[region]?.items || []).length;
+          const filteredCount = (payload?.items || []).length;
+          const regionStats = stats[region] || { titleHits: 0, analystHits: 0 };
+          console.log(`   ${region}: ${filteredCount}/${originalCount} 件 (タイトル一致 ${regionStats.titleHits}, 著者一致 ${regionStats.analystHits})`);
+        }
+      }
+      const dateFilteredResults = filterByDateRange(filteredResults, {
+        fromDate: args.fromDate,
+        toDate: args.toDate,
+        referenceDate
+      });
+      if (args.fromDate || args.toDate) {
+        for (const [region, payload] of Object.entries(dateFilteredResults)) {
+          const beforeCount = (filteredResults[region]?.items || []).length;
+          const afterCount = (payload?.items || []).length;
+          console.log(`   ${region}: 日付フィルター後 ${afterCount}/${beforeCount} 件`);
+        }
+      }
+      const summary = await writeRegionOutputs(dateFilteredResults, {
+        outputDir: args.output,
+        runDate: args.date || null,
+        referenceDate
+      });
+      resolvedDate = path.basename(summary.directory);
+      console.log(`✅ Nomura: 出力先 ${summary.directory}`);
+      console.log(`   合計件数: ${summary.combinedCount}`);
+      if (!args.from) {
+        console.log('   Googleドライブへのアップロードは、生成されたCSVをGoogleスプレッドシートにインポートしてください。');
       }
     }
-    const dateFilteredResults = filterByDateRange(filteredResults, {
-      fromDate: args.fromDate,
-      toDate: args.toDate,
-      referenceDate
-    });
-    if (args.fromDate || args.toDate) {
-      for (const [region, payload] of Object.entries(dateFilteredResults)) {
-        const beforeCount = (filteredResults[region]?.items || []).length;
-        const afterCount = (payload?.items || []).length;
-        console.log(`   ${region}: 日付フィルター後 ${afterCount}/${beforeCount} 件`);
+
+    const providerDate = resolvedDate || args.date || getTodayString();
+
+    if (providerSet.has('smbc-nikko')) {
+      const { parseArgs: parseSmbcArgs, runCollector: runSmbcCollector } = require('./providers/smbc');
+      const smbcArgv = ['node', 'smbc', '--output', args.output, '--date', providerDate];
+      if (args.storageState) {
+        smbcArgv.push('--storage-state', args.storageState);
       }
+      if (args.headless === false) {
+        smbcArgv.push('--headless=false');
+      }
+      if (args.debug) {
+        smbcArgv.push('--debug');
+      }
+      if (args.smbcCategories.length > 0) {
+        smbcArgv.push('--categories', args.smbcCategories.join(','));
+      }
+      if (args.smbcMaxPages) {
+        smbcArgv.push('--max-pages', String(args.smbcMaxPages));
+      }
+      if (args.smbcMaxItems) {
+        smbcArgv.push('--max-items', String(args.smbcMaxItems));
+      }
+      if (args.smbcTimeout && args.smbcTimeout !== 30000) {
+        smbcArgv.push('--timeout', String(args.smbcTimeout));
+      }
+      const smbcArgs = parseSmbcArgs(smbcArgv);
+      await runSmbcCollector(smbcArgs);
     }
-    const summary = await writeRegionOutputs(dateFilteredResults, {
-      outputDir: args.output,
-      runDate: args.date || null,
-      referenceDate
-    });
-    console.log(`✅ 出力先: ${summary.directory}`);
-    console.log(`   合計件数: ${summary.combinedCount}`);
-    if (!args.from) {
-      console.log('   Googleドライブへのアップロードは、生成されたCSVをGoogleスプレッドシートにインポートしてください。');
+
+    if (providerSet.has('daiwa')) {
+      const { parseArgs: parseDaiwaArgs, runCollector: runDaiwaCollector } = require('./providers/daiwa');
+      const daiwaArgv = ['node', 'daiwa', '--output', args.output, '--date', providerDate];
+      if (args.storageState) {
+        daiwaArgv.push('--storage-state', args.storageState);
+      }
+      if (args.headless === false) {
+        daiwaArgv.push('--headless=false');
+      }
+      if (args.debug) {
+        daiwaArgv.push('--debug');
+      }
+      if (args.daiwaCategories.length > 0) {
+        daiwaArgv.push('--categories', args.daiwaCategories.join(','));
+      }
+      if (args.daiwaMaxPages) {
+        daiwaArgv.push('--max-pages', String(args.daiwaMaxPages));
+      }
+      if (args.daiwaMaxItems) {
+        daiwaArgv.push('--max-items', String(args.daiwaMaxItems));
+      }
+      if (args.daiwaTimeout) {
+        daiwaArgv.push('--timeout', String(args.daiwaTimeout));
+      }
+      if (args.daiwaWaitAfterSearch !== null && args.daiwaWaitAfterSearch !== undefined) {
+        daiwaArgv.push('--wait-after-search', String(args.daiwaWaitAfterSearch));
+      }
+      if (args.daiwaKeywordDelay !== null && args.daiwaKeywordDelay !== undefined) {
+        daiwaArgv.push('--keyword-delay', String(args.daiwaKeywordDelay));
+      }
+      const daiwaArgs = parseDaiwaArgs(daiwaArgv);
+      await runDaiwaCollector(daiwaArgs);
     }
   } catch (error) {
     console.error('❌ エラー:', error.message);

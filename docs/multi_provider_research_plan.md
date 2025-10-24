@@ -51,9 +51,9 @@ tmp/
 - [x] `deriveProviderSlug` に `smbc-nikko` を登録（既存 `PROVIDER_RULES` へ）。
 
 ### 2. 大和証券
-- [ ] 会員ページの認証方式を確認（ID/PW、証券系シングルサインオンなど）。
-- [ ] レポート一覧のカテゴリ構成を調査し、スクレイピング／APIの可否を確認。
-- [ ] `scripts/providers/daiwa.js` を実装し、`reports/<date>/sources/daiwa.json` を生成。
+- [x] 会員ページの認証方式を確認（ID/PWのみ、ワンタイムパス不要）。
+- [ ] レポート一覧のカテゴリ構成を調査し、スクレイピング／APIの可否を確認（現状はキーワード検索により暫定対応）。
+- [x] `scripts/providers/daiwa.js` を実装し、`reports/<date>/sources/daiwa.json` を生成。
 - [ ] PDF ダウンロードパターンを `collectPdfCandidates` に追加（例: `_download.pdf` など）。
 - [ ] 追加の CAPTCHA やファイル名規則があれば `buildDriveFileName` に反映。
 
@@ -119,3 +119,18 @@ tmp/
 - `node scripts/collectReports.js --providers smbc-nikko --storage-state storage_state.json --date 2025-10-23 --smbc-categories us-economy,eu-economy --smbc-max-pages 1 --debug` を実行し、「米国経済」「欧州経済」各1件を取得（`reports/2025-10-23/sources/smbc_nikko.json`）。
 - `node scripts/fetchFulltext.js --date 2025-10-23 --categories us-economy,eu-economy --storage-state storage_state.json --drive-upload --debug` を実行し、該当2件のPDFアップロードを確認（Drive: フォルダID `1593sqSQhNgKE7m0noKVdSbJC_XDHtdQ3` 直下、メタ: `reports/.meta/2025-10-23/fulltext/*.json`）。
 - `FULLTEXT_DRIVE_FLAT=1` / `FULLTEXT_DRIVE_USE_DATE_FOLDER=0` を設定し、Drive直下で `YYYY-MM-DD_<レポートタイトル>_<要約抜粋>.pdf` 形式に統一。Nomura/SMBC いずれも同一命名規則・階層で運用する。
+
+### 大和証券 暫定実装メモ（2025-10-23）
+- `config/providers.json` に `daiwa` セクションを追加し、対象カテゴリ（大和の視点／大和の経済ビュー／木野内栄治のMarket Tips）と検索キーワード・期待カテゴリ名を登録。
+- `scripts/saveStorageState.js` を汎用化。`node scripts/saveStorageState.js --provider daiwa --output storage_state_daiwa.json` で Daiwa Research Portal 用 storage state を生成可能。
+- `scripts/providers/daiwa.js` を新規実装。検索ページを開き、カテゴリごとにキーワード検索→日付フィルタ→結果抽出→`reports/<date>/sources/daiwa_securities.json` と `.meta` 側へ保存する暫定フローを追加。
+  - 例: `node scripts/providers/daiwa.js --storage-state storage_state_daiwa.json --date 2025-10-23 --categories viewpoint,economic-view,market-tips --max-pages 2 --debug`
+  - DOM構造が未検証のため、抽出セレクタは広めに設定。実運用でログを確認しながら最適化を行う。
+- `scripts/collectReports.js` から `--provider daiwa` 指定時に上記スクリプトを呼び出すよう連携済み。
+- TODO: Daiwa 側の PDF 直リンクやカテゴリIDを特定し、`collectPdfCandidates` への登録およびセレクタの精緻化を行う。
+
+### 大和証券 PDF 取得メモ（2025-10-24）
+- `scripts/providers/daiwa.js` の URL 正規化を修正し、相対パス `../../member/...` を `https://drp.daiwa.co.jp/rp-daiwa/...` として保存するように変更。
+- `scripts/fulltext/extractors.js` の `collectPdfCandidates` に Daiwa 固有の `report_type=pdf` 変換と `metadata.pdfUrl` 取り込みを追加。リスト画面が保持している `direct/report/<id>/pdf/...` 形式も候補に入るため、HTML抽出後に PDF が添付される。
+- `node scripts/fetchFulltext.js --date 2025-10-24 --categories viewpoint,economic-view,market-tips --storage-state storage_state_daiwa.json --no-drive-upload --debug` を実行し、全3カテゴリでPDFバッファ取得と本文抽出が成功したことを確認（Driveは未送信）。
+- 今後 Drive へアップロードする際は `--drive-upload` と `.env` の `FULLTEXT_DRIVE_FOLDER_ID` を指定すれば、SMBC/野村と同じ命名規則 (`YYYY-MM-DD_daiwa_securities_<タイトル>.pdf`) で保存可能。
