@@ -23,6 +23,11 @@ const KEYWORD_SEARCHES = [
 
 const MAX_ITEMS_PER_KEYWORD = 40;
 const KEYWORD_TIMEOUT_MS = 10000;
+const NOMURA_LOGIN_SELECTORS = [
+  'input[name="username"]',
+  'input[type="email"]',
+  'input[name="password"]'
+];
 
 function parseDateString(input) {
   if (!input) return null;
@@ -305,6 +310,10 @@ async function collectWithBrowser(args) {
     try {
       if (args.debug) console.log(`   [DEBUG] ${keyword} を検索`);
       await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: KEYWORD_TIMEOUT_MS * 2 });
+      const loginVisible = await page.locator(NOMURA_LOGIN_SELECTORS.join(', ')).first().isVisible().catch(() => false);
+      if (loginVisible) {
+        throw new Error('ログインが必要です。`node scripts/saveStorageState.js --provider nomura --output storage_state_nomura.json` などで storage state を更新してください。');
+      }
       const input = page.locator('input[placeholder="定期刊行物すべて"], input[aria-label="定期刊行物すべて"]').first();
       await input.waitFor({ timeout: KEYWORD_TIMEOUT_MS });
       await input.fill('', { timeout: 2000 });

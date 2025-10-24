@@ -56,6 +56,7 @@ function parseArgs(argv) {
     headless: true,
     rateWait: DEFAULT_RATE_WAIT_MS,
     retries: DEFAULT_RETRY,
+    cleanupLocal: false,
     driveFlatStructure: envConfig.driveFlatStructure,
     selectorWait: 5000,
     writePlain: false,
@@ -103,6 +104,8 @@ function parseArgs(argv) {
       args.rateWait = Number(argv[++i]) || DEFAULT_RATE_WAIT_MS;
     } else if ((arg === '--retries' || arg === '--retry') && argv[i + 1]) {
       args.retries = Math.max(0, Number(argv[++i]) || DEFAULT_RETRY);
+    } else if (arg === '--cleanup-local') {
+      args.cleanupLocal = true;
     } else if (arg === '--write-plain') {
       args.writePlain = true;
     } else if (arg === '--debug') {
@@ -151,6 +154,8 @@ function parseArgs(argv) {
       args.driveProviderFallback = argv[++i];
     } else if (arg === '--drive-flat') {
       args.driveFlatStructure = true;
+    } else if (arg === '--no-cleanup-local') {
+      args.cleanupLocal = false;
     } else if ((arg === '--drive-retries' || arg === '--drive-max-retries') && argv[i + 1]) {
       const driveRetriesValue = Number(argv[++i]);
       if (!Number.isFinite(driveRetriesValue) || driveRetriesValue <= 0) {
@@ -178,6 +183,52 @@ function parseArgs(argv) {
     throw new Error('--category もしくは --all を指定するか、FULLTEXT_DEFAULT_CATEGORIES を設定してください');
   }
   return args;
+}
+
+async function cleanupVisibleOutputs(visibleDir, categories, options = {}) {
+  if (!visibleDir) return { removed: [] };
+  const removed = [];
+  const errors = [];
+
+  const removeTarget = async (target, { recursive = false } = {}) => {
+    if (!target) return;
+    try {
+      await fs.rm(target, { recursive, force: true });
+      removed.push(target);
+    } catch (error) {
+      if (error.code !== 'ENOENT') {
+        errors.push({ target, message: error.message });
+      }
+    }
+  };
+
+  const csvTargets = [];
+  const sanitizedCategories = ensureArray(categories).map((category) => sanitizeFilename(category));
+  sanitizedCategories.forEach((name) => {
+    if (!name) return;
+    csvTargets.push(path.join(visibleDir, `${name}.csv`));
+    csvTargets.push(path.join(visibleDir, `${name}.json`));
+  });
+  const defaultTargets = [
+    path.join(visibleDir, 'overseas_reports.json'),
+    path.join(visibleDir, 'overseas_reports.csv'),
+    path.join(visibleDir, 'index.json')
+  ];
+
+  for (const target of [...defaultTargets, ...csvTargets]) {
+    await removeTarget(target);
+  }
+
+  await removeTarget(path.join(visibleDir, 'sources'), { recursive: true });
+  await removeTarget(path.join(visibleDir, 'plain'), { recursive: true });
+
+  if (options.debug && removed.length > 0) {
+    console.log('[cleanup] ローカル出力を削除:', removed.map((item) => path.relative(process.cwd(), item)));
+  }
+  if (errors.length > 0) {
+    console.warn('[cleanup] 削除に失敗したファイルがあります:', errors);
+  }
+  return { removed, errors };
 }
 
 function normalizeCategories(entries) {
@@ -651,6 +702,22 @@ async function main() {
       plainDir: path.join(visibleDir, 'plain')
     });
     await updateOverseasCsv(reportDir, resultsMap);
+    if (args.cleanupLocal && driveUploader && failures.length === 0 && driveFailures.length === 0) {
+      try {
+        const cleanupResult = await cleanupVisibleOutputs(visibleDir, activeList, { debug: args.debug });
+        if (cleanupResult.removed.length === 0 && args.debug) {
+          console.log('[cleanup] 削除対象がありませんでした');
+        }
+      } catch (error) {
+        console.warn(`[cleanup] ローカルファイル削除中にエラーが発生しました: ${error.message}`);
+      }
+    } else if (args.cleanupLocal) {
+      if (!driveUploader) {
+        console.log('[cleanup] スキップ: Driveアップローダーが初期化されていません (--drive-upload が必要です)');
+      } else if (failures.length > 0 || driveFailures.length > 0) {
+        console.log('[cleanup] スキップ: 本文抽出またはDriveアップロードに失敗した項目があります');
+      }
+    }
     await writeFailures(reportDir, [...failures, ...driveFailures]);
     console.log('本文取得を完了しました');
   } catch (error) {

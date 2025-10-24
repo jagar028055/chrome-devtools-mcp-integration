@@ -122,7 +122,7 @@ tmp/
 
 ### 大和証券 暫定実装メモ（2025-10-23）
 - `config/providers.json` に `daiwa` セクションを追加し、対象カテゴリ（大和の視点／大和の経済ビュー／木野内栄治のMarket Tips）と検索キーワード・期待カテゴリ名を登録。
-- `scripts/saveStorageState.js` を汎用化。`node scripts/saveStorageState.js --provider daiwa --output storage_state_daiwa.json` で Daiwa Research Portal 用 storage state を生成可能。
+- `scripts/saveStorageState.js` を汎用化。`node scripts/saveStorageState.js --provider daiwa --output storage_state_daiwa.json` や `--provider nomura --output storage_state_nomura.json` など、各社用の storage state を簡単に再発行できる。
 - `scripts/providers/daiwa.js` を新規実装。検索ページを開き、カテゴリごとにキーワード検索→日付フィルタ→結果抽出→`reports/<date>/sources/daiwa_securities.json` と `.meta` 側へ保存する暫定フローを追加。
   - 例: `node scripts/providers/daiwa.js --storage-state storage_state_daiwa.json --date 2025-10-23 --categories viewpoint,economic-view,market-tips --max-pages 2 --debug`
   - DOM構造が未検証のため、抽出セレクタは広めに設定。実運用でログを確認しながら最適化を行う。
@@ -134,3 +134,4 @@ tmp/
 - `scripts/fulltext/extractors.js` の `collectPdfCandidates` に Daiwa 固有の `report_type=pdf` 変換と `metadata.pdfUrl` 取り込みを追加。リスト画面が保持している `direct/report/<id>/pdf/...` 形式も候補に入るため、HTML抽出後に PDF が添付される。
 - `node scripts/fetchFulltext.js --date 2025-10-24 --categories viewpoint,economic-view,market-tips --storage-state storage_state_daiwa.json --no-drive-upload --debug` を実行し、全3カテゴリでPDFバッファ取得と本文抽出が成功したことを確認（Driveは未送信）。
 - 今後 Drive へアップロードする際は `--drive-upload` と `.env` の `FULLTEXT_DRIVE_FOLDER_ID` を指定すれば、SMBC/野村と同じ命名規則 (`YYYY-MM-DD_daiwa_securities_<タイトル>.pdf`) で保存可能。
+- `fetchFulltext` に `--cleanup-local` フラグを追加。Drive へのアップロードが全件成功した場合、`reports/<date>/overseas_reports.{json,csv}` や `reports/<date>/sources/` など可視ディレクトリのJSON/CSVを自動削除し、メタディレクトリ(`reports/.meta/<date>`)のみを残す運用が可能になった。

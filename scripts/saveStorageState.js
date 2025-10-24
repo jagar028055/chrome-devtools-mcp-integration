@@ -28,6 +28,16 @@ const PROVIDERS = {
       'ワンタイムパスワード不要・ID/PW認証なので、通常のログイン手順を実施してください。',
       'ログイン後にリサーチポータルのトップ（equity/index.do）が表示されていることを確認してください。'
     ]
+  },
+  nomura: {
+    key: 'nomura',
+    label: '野村證券（Nomura Research）',
+    loginUrl: 'https://www.nomuranow.com/research/',
+    instructions: [
+      'Nomura Research（NomuraNow）のログインページを開きました。',
+      '登録済みのメールアドレスとパスワードでログインしてください。',
+      'ログイン後に Research ポータルのホーム画面が表示されることを確認してください。'
+    ]
   }
 };
 
