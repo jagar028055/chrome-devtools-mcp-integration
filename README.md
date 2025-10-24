@@ -110,6 +110,104 @@ Chrome DevTools MCPがClaude Codeに統合されており、以下のような�
 - Google Drive APIでの結果保存
 - PDF解析との組み合わせ
 
+## レポート取得フロー
+
+以下は Nomura（野村證券）、SMBC日興証券、大和証券のレポートを収集し、Google Drive へ PDF を保存してローカルデータをクリーンアップするまでの手順です。日付は例として `2025-10-24` を使用しています。必要に応じて置き換えてください。
+
+### 1. storage state の発行（初回／認証切れ時）
+
+```bash
+# Nomura Research (NomuraNow)
+node scripts/saveStorageState.js --provider nomura --output storage_state_nomura.json
+
+# SMBC日興証券
+node scripts/saveStorageState.js --provider smbc-nikko --output storage_state_smbc.json
+
+# 大和証券 Daiwa Research Portal
+node scripts/saveStorageState.js --provider daiwa --output storage_state_daiwa.json
+```
+
+ブラウザが開いたら各社にログインし、完了後ターミナルで Enter を押すと `storage_state_*.json` が保存されます。
+
+### 2. レポート一覧を取得（JSON 出力）
+
+```bash
+# Nomura（必要に応じて --debug を付与）
+node scripts/collectReports.js \
+  --providers nomura \
+  --storage-state storage_state_nomura.json \
+  --date 2025-10-24 \
+  --debug
+
+# SMBC日興証券（カテゴリはコンマ区切り）
+node scripts/collectReports.js \
+  --providers smbc-nikko \
+  --storage-state storage_state_smbc.json \
+  --date 2025-10-24 \
+  --smbc-categories us-economy,eu-economy \
+  --debug
+
+# 大和証券
+node scripts/providers/daiwa.js \
+  --storage-state storage_state_daiwa.json \
+  --date 2025-10-24 \
+  --categories viewpoint,economic-view,market-tips \
+  --debug
+```
+
+### 3. PDF取得とGoogle Driveへのアップロード
+
+```bash
+# SMBC日興証券の本文抽出 + Drive アップロード + ローカルクリーンアップ
+node scripts/fetchFulltext.js \
+  --date 2025-10-24 \
+  --categories us-economy,eu-economy \
+  --storage-state storage_state_smbc.json \
+  --drive-upload \
+  --cleanup-local \
+  --debug
+
+# 大和証券も同様に実行
+node scripts/fetchFulltext.js \
+  --date 2025-10-24 \
+  --categories viewpoint,economic-view,market-tips \
+  --storage-state storage_state_daiwa.json \
+  --drive-upload \
+  --cleanup-local \
+  --debug
+
+# Nomura の fetchFulltext を実装済みの場合は同様に実行します。
+```
+
+`--cleanup-local` を指定すると Drive アップロード成功後に `reports/<date>/` 配下の可視 JSON/CSV や `sources/` フォルダが自動削除され、メタ情報（`reports/.meta/<date>/...`）のみが残ります。
+
+### 4. まとめて実行したい場合のサンプル
+
+```bash
+# 1日分をまとめて処理するシェルスクリプト例（macOS/Linux）
+export TARGET_DATE=2025-10-24
+
+node scripts/collectReports.js --providers nomura \
+  --storage-state storage_state_nomura.json --date "$TARGET_DATE"
+
+node scripts/collectReports.js --providers smbc-nikko \
+  --storage-state storage_state_smbc.json --date "$TARGET_DATE" \
+  --smbc-categories us-economy,eu-economy
+
+node scripts/providers/daiwa.js --storage-state storage_state_daiwa.json \
+  --date "$TARGET_DATE" --categories viewpoint,economic-view,market-tips
+
+node scripts/fetchFulltext.js --date "$TARGET_DATE" \
+  --categories us-economy,eu-economy \
+  --storage-state storage_state_smbc.json --drive-upload --cleanup-local
+
+node scripts/fetchFulltext.js --date "$TARGET_DATE" \
+  --categories viewpoint,economic-view,market-tips \
+  --storage-state storage_state_daiwa.json --drive-upload --cleanup-local
+```
+
+必要に応じて Nomura の本文抽出コマンドも上記スクリプトに追加してください。
+
 ## Chrome DevTools PDFフォールバック機能
 
 ### 概要
@@ -246,7 +344,6 @@ sudo xattr -r -d com.apple.quarantine /Applications/Google\ Chrome.app
 ├── .env.example             # 環境変数テンプレート
 └── package.json             # プロジェクト設定
 ```
-
 
 
 
