@@ -1,0 +1,6 @@
+node_modules/
+reports/
+tmp/
+logs/
+storage_state*.json
+scripts/providers/*.local.js
